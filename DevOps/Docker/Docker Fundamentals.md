@@ -1,7 +1,7 @@
 
-# Fundatmentals of Docker
+# Fundamentals of Docker
 
-- [Fundatmentals of Docker](#fundatmentals-of-docker)
+- [Fundamentals of Docker](#fundamentals-of-docker)
   - [What is Docker?](#what-is-docker)
   - [Docker Architecture](#docker-architecture)
     - [Docker Images](#docker-images)
