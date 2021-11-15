@@ -8,6 +8,8 @@
     - [Docker Registry](#docker-registry)
     - [Containers](#containers)
   - [Other container technology](#other-container-technology)
+    - [Control Groups](#control-groups)
+    - [Kernel Namespaces](#kernel-namespaces)
   - [References, Links and Further Information](#references-links-and-further-information)
 
 ## What is Docker?
@@ -79,6 +81,26 @@ Image from Tutorialworks (see references):
 
 Container ecosystem:
 ![Container ecosystem](https://containerd.io/img/architecture.png?raw=true "Title")
+
+### Control Groups
+
+cgroups are a feature of the linux kernel, that allow users to limit the access that processes and containers have to system resources such as CPU, RAM, IOPS and the network. 
+
+Docker uses cgroups to enforce constraints on docker containers to prevent a single container from consuming all resources on the host i.e. to prevent forkbombs etc. This is particularly important in multi-tenant platforms.
+
+### Kernel Namespaces
+
+Namespaces are a feature of the linux kernel that provide isolation for fundamental aspects of containers from the host OS. Namespaces provide the first and most straightforward form of isolation: processes running within a container cannot see processes running in another container, or on the host system.
+
+By default each container also gets its own network stack, meaning that a container doesn’t get privileged access to the sockets or interfaces of another container. From a network architecture point of view, all containers on a given Docker host are sitting on bridge interfaces. This means that they are just like physical machines connected through a common Ethernet switch.
+
+Docker namespaces:
+- PID - process isolation
+- NET - manages network interfaces
+- IPC - access to IPC resources
+- MNT - filesystem mount points
+- UTS - isolates kernel and version identifiers
+- UID - UserID for privilege isolation
 
 ## References, Links and Further Information
 - [dockerlabs - docker commands cheatsheet ](https://dockerlabs.collabnix.com/docker/cheatsheet/)
