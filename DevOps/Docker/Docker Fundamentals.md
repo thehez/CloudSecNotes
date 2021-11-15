@@ -102,7 +102,7 @@ Docker namespaces:
 - UTS - isolates kernel and version identifiers
 - UID - UserID for privilege isolation
 
-Security Note on UID, by default a root user in a docker container has the same priviges as the root user of the host - i.e. if a mount point has been connected to the docker container the conatiner root user can access that mount on the host OS.
+Security Note on UID, by default a root user in a docker container has the same priviges as the root user of the host - i.e. if a mount point has been connected to the docker container the conatiner root user can access that mount on the host OS. See docker security and hardening.
 
 ## References, Links and Further Information
 - [dockerlabs - docker commands cheatsheet ](https://dockerlabs.collabnix.com/docker/cheatsheet/)
