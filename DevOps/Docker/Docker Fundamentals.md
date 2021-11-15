@@ -7,8 +7,8 @@
     - [Docker Images](#docker-images)
     - [Docker Registry](#docker-registry)
     - [Containers](#containers)
-    - [Underlying technology](#underlying-technology)
-  - [Useful Links and Further Information](#useful-links-and-further-information)
+  - [Other container technology](#other-container-technology)
+  - [References, Links and Further Information](#references-links-and-further-information)
 
 ## What is Docker?
 
@@ -16,7 +16,7 @@ Docker is a developer tool that performs host OS virtualisation aka "containeris
 
 Docker is used to create, run and deploy applications in containers. A Docker image contains the application's code, libraries, tools, dependencies and other files needed to make an application run. This solves the problem of "it works on my machine" by making it easy to package apps and their dependancies into one bundle - the container. 
 
-Note - Due to the nature of containers being lightweight and portable they integrate well into Cloud and Continuous Integration/Continuous Deployment (CI/CD) environments. 
+Note - Due to the nature of containers being lightweight and portable they integrate well into Cloud and Continuous Integration/Continuous Deployment (CI/CD) environments through the use of container orchestration platforms which manage the scheduling of containers - the most popular being kubernetes. 
 
 ## Docker Architecture
 
@@ -56,18 +56,33 @@ By default, a container is relatively well isolated from other containers and it
 
 A container is defined by its image as well as any configuration options you provide to it when you create or start it. When a container is removed, any changes to its state that are not stored in persistent storage disappear. Containers are predominately expected to run in the background, however its possible to create containers in 'interactive' mode and connect to them. 
 
-### Underlying technology
+## Other container technology
 
-- containerd is a container runtime which can manage a complete container lifecycle - from image transfer/storage to container execution, supervision and networking.
+Docker is not the only container technology though it is the most popular, however recently kubernetes (k8s) has dropped docker in favour of containerd. The Open Container Initiative (and container runtime interface in the case of K8s) provides a set of standards and most of these tools work together. From a top down approach:
+
+Image from Tutorialworks (see references):
+![Container technology flow](https://www.tutorialworks.com/assets/images/container-ecosystem.drawio.png?raw=true "Title")
+
+- Docker engine is what end users interact with to run docker commands 
+
+- Containerd is a high-level container runtime that came from Docker, and implements the CRI spec. It pulls images from registries, manages them and then hands over to a lower-level runtime, which actually creates and runs the container processes. Containerd was separated out of the Docker project, to make Docker more modular, but Docker still uses containerd internally itself - when you install Docker, it will also install containerd.
+
+- containerd also implements the Kubernetes Container Runtime Interface (CRI), via its cri plugin.
+
 - container-shim handle headless containers, meaning once runc initializes the containers, it exits handing the containers over to the container-shim which acts as some middleman.
-- runc is lightweight universal run time container, which abides by the OCI specification. runc is used by containerd for spawning and running containers according to OCI spec. It is also the repackaging of libcontainer.
-- grpc used for communication between containerd and docker-engine.
+  
+- runc is lightweight universal run time container, which abides by the Open Container Initiative (OCI) specification. runc is used by containerd for spawning and running containers according to OCI spec. It is also the repackaging of libcontainer.
+  
+- grpc is used for communication between containerd and docker-engine.
+  
 - OCI maintains the OCI specification for runtime and images. The current docker versions support OCI image and runtime specs.
 
+Container ecosystem:
+![Container ecosystem](https://containerd.io/img/architecture.png?raw=true "Title")
 
-## Useful Links and Further Information
+## References, Links and Further Information
 - [dockerlabs - docker commands cheatsheet ](https://dockerlabs.collabnix.com/docker/cheatsheet/)
 - [docker overview - underlying technology ](https://docs.docker.com/get-started/overview/#the-underlying-technology)
 - [docker blog - understanding the containerd runtime ](https://www.docker.com/blog/what-is-containerd-runtime/)
 - [docker stackoverflow - how containerd compares to runc ](https://stackoverflow.com/questions/41645665/how-containerd-compares-to-runc)
-
+- [tutorialworks - understanding containerd runc oci etc... ](https://www.tutorialworks.com/difference-docker-containerd-runc-crio-oci/)
