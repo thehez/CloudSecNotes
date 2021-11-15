@@ -1,4 +1,3 @@
 # PenTestingNotes
-Personal Notes and Cheetsheets for PenTesting
 
-A reference of notes on Penatration Testing and Cyber security consultancy for personal use 
+A reference for personal notes and Cheetsheets for performing PenTesting and configuration reviews of cloud security vendors.
