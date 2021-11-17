@@ -3,6 +3,7 @@
 - [Securing and Hardening Docker Containers](#securing-and-hardening-docker-containers)
   - [Control Groups](#control-groups)
   - [Kernel Namespaces](#kernel-namespaces)
+  - [AppArmor profiles](#apparmor-profiles)
   
 ## Control Groups
 
@@ -31,6 +32,10 @@ In some circumstances processes and applications must run as root within the con
 The remapping itself is handled by two files: /etc/subuid and /etc/subgid. Each file works the same, but one is concerned with the user ID range, and the other with the group ID range. 
 
 For detailed information see https://docs.docker.com/engine/security/userns-remap/
+
+## AppArmor profiles
+
+
 
 
 
