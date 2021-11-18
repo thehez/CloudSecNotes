@@ -4,7 +4,6 @@
   - [Kubernetes Architecture](#kubernetes-architecture)
   - [Managed vs Self-Hosted](#managed-vs-self-hosted)
   - [Typical Plugins](#typical-plugins)
-  - 
 ## What is Kubernetes
 TL;DR - Kubernetes, known as Kubes or 'k8s', is an open-source container orchestration tool for managing container workloads at scale.
 

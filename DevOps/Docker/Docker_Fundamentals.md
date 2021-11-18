@@ -3,6 +3,7 @@
 
 - [Fundamentals of Docker](#fundamentals-of-docker)
   - [What is Docker?](#what-is-docker)
+  - [What is a Container?](#what-is-a-container)
   - [Docker Architecture](#docker-architecture)
     - [Docker Images](#docker-images)
     - [Docker Registry](#docker-registry)
