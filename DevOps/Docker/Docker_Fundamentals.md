@@ -11,15 +11,16 @@
   - [References, Links and Further Information](#references-links-and-further-information)
 
 ## What is Docker?
+Docker is the most popular container developer tool which provides an easy to use interface for building, running, and managing containers on servers and the cloud. The term "docker" may refer to either the tools (the commands and a daemon) or to the Docker image - Dockerfile - file format. 
 
-Docker is a developer tool that performs host OS virtualisation aka "containerisation". As these containers share the host OS they are more efficient than hypervisors/vms. 
+A Docker image contains the application's code, libraries, tools, dependencies and other files needed to make an application run. This solves the problem of "it works on my machine" by making it easy to package apps and their dependancies into one bundle - the container.
 
-Docker is used to create, run and deploy applications in containers. A Docker image contains the application's code, libraries, tools, dependencies and other files needed to make an application run. This solves the problem of "it works on my machine" by making it easy to package apps and their dependancies into one bundle - the container. 
+## What is a Container?
+Containers are a form of virtualisation, but unlike virtual machines they share the hosts Operating System Kernel making them a lightweight portable alternative. Each ontainer has its own filesystem, share of CPU, memory, process space, and more. As they are decoupled from the underlying infrastructure, they are portable across clouds and OS distributions.
 
-Note - Due to the nature of containers being lightweight and portable they integrate well into Cloud and Continuous Integration/Continuous Deployment (CI/CD) environments through the use of container orchestration platforms which manage the scheduling of containers - the most popular being kubernetes. 
+Note - Due to the nature of containers being lightweight and portable they integrate well into Cloud and Continuous Integration/Continuous Deployment (CI/CD) environments through the use of container orchestration platforms which manage the scheduling of containers - the most popular being kubernetes.
 
 ## Docker Architecture
-
 Docker uses a client-server architecture in which the client communicates with the docker daemon to manage the building and running of containers. There are several components of the `docker engine`:
 
 - Docker daemon (dockerd) - Listens for API calls to manage docker objects
@@ -30,7 +31,6 @@ Docker uses a client-server architecture in which the client communicates with t
 The following section is a brief overview of some of those objects.
 
 ### Docker Images
-
 Essentially a Docker image is a set of instructions for Docker to automatically build a container by reading instructions from a `Dockerfile`. A dockerfile is a text document similar to a template in that it contains all the commands a user would call on the command line to assemble an image. The `docker build` command docker will automatically build the docker file into an image. 
 
 An example dockerfile:
@@ -50,7 +50,6 @@ Docker images can be built and stored locally using a dockerfile as described ab
 Note - Best security practice dictates restricting the pulling of images from public repositories (as these could contain vulnerabilities/malware etc). Instead containers should be stored in a private repository that performs image scanning to identify security issues before containers are deployed.
 
 ### Containers
-
 A container is an instance of an image at runtime. You can create, start, stop, move, or delete a container using the Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image based on its current state.
 
 By default, a container is relatively well isolated from other containers and its host machine. You can control how isolated a container’s network, storage, or other underlying subsystems are from other containers or from the host machine.
@@ -58,7 +57,6 @@ By default, a container is relatively well isolated from other containers and it
 A container is defined by its image as well as any configuration options you provide to it when you create or start it. When a container is removed, any changes to its state that are not stored in persistent storage disappear. Containers are predominately expected to run in the background, however its possible to create containers in 'interactive' mode and connect to them. 
 
 ## Other container technology
-
 Docker is not the only container technology though it is the most popular, however recently kubernetes (k8s) has dropped docker in favour of containerd. The Open Container Initiative (and container runtime interface in the case of K8s) provides a set of standards and most of these tools work together. From a top down approach:
 
 Image from Tutorialworks (see references):
