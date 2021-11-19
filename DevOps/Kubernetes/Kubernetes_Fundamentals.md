@@ -1,5 +1,5 @@
-# Kubernetes fundamentals
-- [Kubernetes fundamentals](#kubernetes-fundamentals)
+# Kubernetes Fundamentals
+- [Kubernetes Fundamentals](#kubernetes-fundamentals)
   - [What is Kubernetes](#what-is-kubernetes)
   - [Kubernetes Architecture](#kubernetes-architecture)
     - [Nodes](#nodes)
@@ -8,16 +8,30 @@
     - [Kubernetes Namespaces](#kubernetes-namespaces)
     - [Kubectl](#kubectl)
   - [Managed vs Self-Hosted](#managed-vs-self-hosted)
-  - [Defining Objects](#defining-objects)
+  - [Understanding Objects](#understanding-objects)
     - [Deployments](#deployments)
     - [ReplicaSet](#replicaset)
     - [DaemonSets](#daemonsets)
+    - [StatefulSets](#statefulsets)
+    - [Cronjobs](#cronjobs)
+  - [Networking 101](#networking-101)
+    - [Services](#services)
+      - [NodePort](#nodeport)
+      - [ClusterIP](#clusterip)
+      - [LoadBalancer](#loadbalancer)
+  - [Ingress & Ingress Controller](#ingress--ingress-controller)
+  - [Security Concepts](#security-concepts)
+    - [Pod Security Policies](#pod-security-policies)
+    - [Admission Controllers](#admission-controllers)
+    - [Network Policies](#network-policies)
+    - [Service Mesh](#service-mesh)
+  - [References and Links](#references-and-links)
 ## What is Kubernetes
 TL;DR - Kubernetes, referred to as Kubes or 'k8s', is an open-source container orchestration tool for managing container workloads at scale.
 
 Kubernetes, created by Google, is an open-source platform for managing containerized workloads and services through declarative configuration and automation. 
 
-Containers provide a lightweight platform to bundle applications and microservices. In a production environment, a container orchestration tool such as k8s provides a framework to run distributed systems resiliently, by handling the managent of container deployments and workloads. For example, if a container dies, k8s will automatically schedule another container to replace it, minimising downtime and reducing the operational overhead on system administrators. Furthermore k8s is able to scale containers up and down based on the load to meet availability needs
+Containers provide a lightweight platform to bundle applications and microservices. In a production environment, a container orchestration tool such as k8s provides a framework to run distributed systems resiliently, by handling the managent of container Deployments and workloads. For example, if a container dies, k8s will automatically schedule another container to replace it, minimising downtime and reducing the operational overhead on system administrators. Furthermore k8s is able to scale containers up and down based on the load to meet availability needs
 
 Other Orchestration tools:
 - Docker Swarm - Easy to setup and start but lacks some of the complex features of k8s
@@ -50,6 +64,7 @@ There are two ways to add a node to a cluster:
 
 - Manually - An administrator can add a node by deploying a node object through a manifest
 - Automatically - Setting the `--register-node` flag on the kubelet will cause the kubelet to attempt to register itself with the kube-api server.
+
 ### Control Plane
 As well as the above components, the master node/s hold the cluster control plane components which manage the worker nodes and the scheduling of pods:
 
@@ -66,12 +81,8 @@ Pods are the smallest deployable units of computing that you can create and mana
 
 A Pod is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers. A Pod's contents are always co-located and co-scheduled, and run in a shared context. The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation - the same things that isolate a Docker container.
 
-In terms of Docker concepts, a Pod is similar to a group of Docker containers with shared namespaces and shared filesystem volumes.
-Using Pod
-
 ### Kubernetes Namespaces
 In Kubernetes, namespaces provides a way to isolate groups of resources within a cluster. Namespaces are only applicable to certain 'namespaced' objects (e.g. Deployments, Services, etc) and not for objects which exist cluster-wide (e.g. StorageClass, Nodes, PersistentVolumes, etc).
-Namespaces are intended for use in environments with many users spread across multiple teams, or projects. For clusters with a few to tens of users, you should not need to create or think about namespaces at all. Start using namespaces when you need the features they provide.
 
 Namespaces are a way to divide cluster resources between multiple tenants and users and can be used to provide security segregation when different services have different access levels i.e. a user can have access to objects within one namespace but not another.
 
@@ -81,6 +92,7 @@ Kubernetes starts with four initial namespaces:
 - Kube-system The namespace for objects created by the Kubernetes system access to this namespace should be restricted.
 - Kube-public This namespace is created automatically and is readable by all users (including those not authenticated). This namespace is mostly reserved for cluster usage, in case that some resources should be visible and readable publicly throughout the whole cluster. The public aspect of this namespace is only a convention, not a requirement.
 - Kube-node-lease This namespace holds Lease objects associated with each node. Node leases allow the kubelet to send heartbeats so that the control plane can detect node failure.
+
 ### Kubectl
 Kubectl (kube control) is the kube command line tool that provides end users control of Kubernetes clusters. For configuration, kubectl looks for a file named config in the `$HOME/.kube` directory. It is also possible to specify other kubeconfig files by setting the KUBECONFIG environment variable or by setting the --kubeconfig flag.
 
@@ -89,11 +101,11 @@ Kubectl supports multiple commands a cheatsheet for useage can be found here - h
 ## Managed vs Self-Hosted
 Kubernetes is open source and can be deployed on traditional on-premise networks, in hybrid environments, or on public and private cloud infrastructure. 
 
-A Managed Kubernetes deployment is one in which a third-party vendor (such as a cloud provider) manages responsibility for some or all of the work necessary for the set-up and operation of K8s. Depending on the vendor, “managed” can refer to anything from dedicated support, to hosting with pre-configured environments, to full hosting and operation.
+A Managed Kubernetes Deployment is one in which a third-party vendor (such as a cloud provider) manages responsibility for some or all of the work necessary for the set-up and operation of K8s. Depending on the vendor, “managed” can refer to anything from dedicated support, to hosting with pre-configured environments, to full hosting and operation.
 
-The most common managed solutions are those provided by cloud platforms such as Amazon EKS, Azure AKS and Google GKE. In these environments the control/management plane is managed by the hosting provider and the administrators only need to manage the worker nodes and application deployments. Additionally each provider offers a fully managed platform such as Amazons ECS (Elastic Container Service) in which the infrastructure is completely managed and administrators only deploy the applications.
+The most common managed solutions are those provided by cloud platforms such as Amazon EKS, Azure AKS and Google GKE. In these environments the control/management plane is managed by the hosting provider and the administrators only need to manage the worker nodes and application Deployments. Additionally each provider offers a fully managed platform such as Amazons ECS (Elastic Container Service) in which the infrastructure is completely managed and administrators only deploy the applications.
 
-A self-hosted cluster is one that is managed by the organisation and in which the administrator is responsible for both the control plane and the data plane; master nodes, worker nodes and application deployments. Configuring kubernetes from scratch can be a difficult process, as such there are a number of solutions that make it quicker and easier to bootstrap a kubernetes cluster, Some common products include:
+A self-hosted cluster is one that is managed by the organisation and in which the administrator is responsible for both the control plane and the data plane; master nodes, worker nodes and application Deployments. Configuring kubernetes from scratch can be a difficult process, as such there are a number of solutions that make it quicker and easier to bootstrap a kubernetes cluster, Some common products include:
 
 - Minikube
 - Kubernetes in Docker (KIND)
@@ -101,14 +113,123 @@ A self-hosted cluster is one that is managed by the organisation and in which th
 - microk8s
 
 Note - for learning kubernetes minikube and Kind allow you to install kubernetes in a Docker container making it easier to spin up, interact with and destroy when finished. To run minikube in docker, install kubectl first (as minikube will automatically populate the kube config) and then install minikube and enable the docker driver `minikube config set driver docker` you can then start a cluster with the command `minikube start` for detailed useage information see - https://minikube.sigs.k8s.io/docs/start/.
-## Defining Objects
-To create an object in Kubernetes, you must provide the object spec that describes its desired state, as well as some basic information about the object. When you use the Kubernetes API to create the object that API request must include that information as JSON in the request body. Typically this is achieved by creating a yaml definition, you provide the information to kubectl via the `.yaml` file and kubectl converts the information to JSON when making the API request.
 
-Useful VSCode extensions for Kubernetes:
+## Understanding Objects
+To deploy microservices and application within k8s you need to define/create an object. You must provide the object spec that describes its desired state as well as some basic information about the object. When you use the Kubernetes API to create the object, that request must include that information as JSON in the request body - typically this is achieved by creating a yaml definition - you provide the information to kubectl via the `.yaml` file and kubectl converts the information to JSON when making the API request.
+
+Useful VSCode extensions for working with K8s objects:
 - Kubernetes - syntax highlighting, intellisense etc...
 - YAML (RedHat) - YAML validation and auto-completion
-- Kubernetes Snippets - code snippets for various k8s deployments making it faster to deploy resources
+- Kubernetes Snippets - code snippets for various k8s Deployments making it faster to deploy resources
 
 ### Deployments
+https://kubernetes.io/docs/concepts/workloads/controllers/Deployment/
+
+You shouldn't create pods directly within kubernetes, instead you would use a Deployment (or statefulset etc.) A Deployment provides declarative updates for Pods and ReplicaSets - you describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. 
+
+You can define Deployments to create new Pods/ReplicaSets, remove existing Deployments and roll-back to existing states. 
+
 ### ReplicaSet
+https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+
+A ReplicaSet ensures a specified number of replica Pods are running at any given time by creating and deleting Pods as required to reach the declared number. When a ReplicaSet needs to create new Pods, it uses its Pod template. ReplicaSets are usually defined by a Deployment.
+
 ### DaemonSets
+https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+
+A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. This is for usecases such as running a logging and monitoring solution on each node to collect metrics. As nodes are added and removed from the cluster, Pods are added and deleted from them. Deleting a DaemonSet will clean up all the Pods it created.
+
+### StatefulSets
+https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+
+Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. However, unlike a Deployment, a StatefulSet maintains a sticky identity for each of their Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling. This is useful for situations where it is required to use persistant storage; if a pod in a StatefulSet fails, the persistent Pod identifiers match existing volumes to the new Pods to replace any that have failed.
+
+### Cronjobs
+https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
+
+A CronJob creates Jobs on a repeating schedule, where one CronJob object is like one line of a crontab. It runs a job periodically on a given schedule, written in Cron format.
+
+## Networking 101
+https://kubernetes.io/docs/concepts/cluster-administration/networking/
+
+Networking in kubernetes can be a complex topic. Fundamentally k8s does not provide a native networking solution itself and this should be provided by installing a Container Network Interface (CNI) plugin. There are multiple CNI's available which have different benefits but some common options include:
+
+- Calico - https://docs.projectcalico.org/
+- Cilium - https://github.com/cilium/cilium
+- Flanel - https://github.com/coreos/flannel#flannel
+- Kube-Router - https://github.com/cloudnativelabs/kube-router
+- Also each cloud hoster offers its own plugin: 
+  - AWS VPC CNI 
+  - Azure CNI
+  - Google Compute Engine
+
+ Typicall K8s has a flat network, where Pods have their own network and recieves it's own IP address, all pods/containers can communicate with each other without NAT (containers within the same pod can communicate over localhost), and all nodes and services can communicate with pods/containers (and vice-versa) without NAT - The CNI plugins should meet these requirements.
+
+### Services
+https://kubernetes.io/docs/concepts/services-networking/service/
+
+The service abstraction provides a way to expose/loadbalance applications within a cluster both internally, e.g. A frontend application communicating with a backend application, or externally e.g. users accessing an application.
+
+There are a few different service types to facilitate this:
+#### NodePort 
+Exposes the Service on each Node's IP at a static port (the NodePort). A ClusterIP Service, to which the NodePort Service routes, is automatically created. You'll be able to contact the NodePort Service, from outside the cluster, by requesting `<NodeIP>:<NodePort>`. There are three ports that must be specified within the service manifest:
+- The 'Target port' - the port on the pod where the application is listening.
+- The 'Port' - the ClusterIP port that communicates with the target port
+- The 'NodePort' - the port that is exposed externally to facilitate access. 
+
+#### ClusterIP 
+Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. ClusterIP provides a way for pods to easily communicate within the cluster. In a scenario where there are multiple front and backend pods, a pod can forward the request to the ClusterIP which will forward the request to the appropriate pod.
+
+#### LoadBalancer
+Exposes a Service externally by provisioning a cloud provider's load balancer e.g. Elastic Load Balancer. NodePort and ClusterIP Services, to which the external load balancer routes, are automatically created.
+
+## Ingress & Ingress Controller
+Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource. An Ingress may be configured to give Services externally-reachable URLs, load balance traffic, terminate SSL / TLS, and offer name-based virtual hosting. 
+
+An Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer, though it may also configure an edge router or additional frontends to help handle the traffic.
+
+An Ingress does not expose arbitrary ports or protocols. Exposing services other than HTTP and HTTPS to the internet typically uses a Service.
+
+## Security Concepts
+Kubernetes security can be considered in layers using the 4C's model - Cloud, Cluster, Container, Code - where each layer builds upon the next. Full information can be found at: https://kubernetes.io/docs/concepts/security/overview/
+
+### Pod Security Policies
+https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+
+PSP's were an admission controller that provided the main security controls for pod specification. The PSP could be attached to pods to govern sensitive aspects, such as what mounts, linux capabilities and UID's the pods could be assigned. This feature is now deprecated as of Kubernetes v1.21, and will be removed in v1.25. https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/
+
+There are several external admission controllers which can be used to provide PSP type controls the most popular options are:
+- [OPA/Gatekeeper](https://github.com/open-policy-agent/gatekeeper/)
+- [Kyverno](https://github.com/kyverno/kyverno/)
+- [K-Rail](https://github.com/cruise-automation/k-rail)
+
+### Admission Controllers
+https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
+
+An admission controller is a piece of code that intercepts requests to the Kubernetes API server prior to persistence of the object, but **after** the request is authenticated and authorized.
+
+Admission controllers can be either "validating", "mutating", or both.  Mutating controllers can modify the objects they admit; validating controllers may not.
+
+The admission control process proceeds in two phases. In the first phase, mutating admission controllers are run. In the second phase, validating admission controllers are run. If any of the controllers in either phase reject the request, the entire request is rejected immediately and an error is returned to the end-user.
+
+### Network Policies
+NetworkPolicies are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network "entities" over the network. By default, if no policies exist in a namespace, then all ingress and egress traffic is allowed to and from pods in that namespace. 
+
+The entities that a Pod can communicate with are identified through a combination of the following 3 identifiers:
+- Other pods that are allowed (exception: a pod cannot block access to itself)
+- Namespaces that are allowed
+- IP blocks (exception: traffic to and from the node where a Pod is running is always allowed, regardless of the IP address of the Pod or the node)
+
+### Service Mesh
+https://platform9.com/blog/kubernetes-service-mesh-a-comparison-of-istio-linkerd-and-consul/
+
+A service mesh isn't a kubernetes construct, but can be used with kubernetes to increase the ability to manage network traffic between services in a safe and reliable way. There are multiple benefits to using a service mesh but enforcing mTLS is the most important.
+
+Common service mesh technologies includ
+- Istio
+- LinkerD
+- Consul
+
+## References and Links
+https://techbeacon.com/security/8-open-source-kubernetes-vulnerability-scanners-consider
+
