@@ -68,9 +68,9 @@ There are two ways to add a node to a cluster:
 ### Control Plane
 As well as the above components, the master node/s hold the cluster control plane components which manage the worker nodes and the scheduling of pods:
 
-- etcd - etcd is a consistent and highly-available key value store used as Kubernetes' backing store for all cluster data. As etcd contains all the information within the cluster, access to etcd is equivilent to root/cluster admin within the cluster. Only the Kube API server should have access to ETCD.
+- etcd - etcd is a distributed, consistent and highly-available key value store used as Kubernetes' backing store for all cluster data. As etcd contains all the information within the cluster, access to etcd is equivilent to root/cluster admin within the cluster. Only the Kube API server should have access to ETCD. 
   
-- Kube-Api Server - The core of the control plane. The API server exposes the kubernetes API which end users, worker nodes and various components interact with. The API can be communicated with via REST calls, or the Kubectl command line tool. The kube-api can scale horizontally by deploying more api instances and load balancing traffic between them.
+- Kube-Api Server - The core of the control plane. The API server exposes the kubernetes API which end users, worker nodes and various components interact with. The API can be communicated with via REST API calls, or by using the Kubectl command line tool. The kube-api can scale horizontally by deploying more API instances and load balancing the traffic between them.
   
 - Kube-Controller-Manager - The brain behind orchestration - maintains a set of controllers for managing various aspects of the cluster such as, node controller, job controller and service account/token controllers.
   
