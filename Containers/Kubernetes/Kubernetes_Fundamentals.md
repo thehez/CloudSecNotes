@@ -172,16 +172,16 @@ The service abstraction provides a way to expose/loadbalance applications within
 
 There are a few different service types to facilitate this:
 #### NodePort 
-Exposes the Service on each Node's IP at a static port (the NodePort). A ClusterIP Service, to which the NodePort Service routes, is automatically created. You'll be able to contact the NodePort Service, from outside the cluster, by requesting `<NodeIP>:<NodePort>`. There are three ports that must be specified within the service manifest:
+Exposes the Service on each Node's IP at a static port (the NodePort). A ClusterIP Service, to which the NodePort Service routes, is automatically created. Users can then access applications via the NodePort Service, from outside the cluster, by requesting the`<NodeIP>:<NodePort>`. There are three ports that must be specified within the service manifest:
 - The 'Target port' - the port on the pod where the application is listening.
 - The 'Port' - the ClusterIP port that communicates with the target port
-- The 'NodePort' - the port that is exposed externally to facilitate access. 
+- The 'NodePort' - the port that is exposed on the node to externally facilitate access. 
 
 #### ClusterIP 
-Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. ClusterIP provides a way for pods to easily communicate within the cluster. In a scenario where there are multiple front and backend pods, a pod can forward the request to the ClusterIP which will forward the request to the appropriate pod.
+Exposes the Service on a virtual cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. ClusterIP provides a way for pods to easily communicate within the cluster. I.e in a scenario where there are multiple front and backend pods, a pod can forward the request to the ClusterIP which will forward the request to the appropriate pod.
 
 #### LoadBalancer
-Exposes a Service externally by provisioning a cloud provider's load balancer e.g. Elastic Load Balancer. NodePort and ClusterIP Services, to which the external load balancer routes, are automatically created.
+Exposes a Service externally by provisioning a cloud provider's load balancer e.g. Elastic Load Balancer. The load balancer will then automatically balance traffic to the available NodePorts. Note this feature only works with supported cloud platforms.
 
 ## Ingress & Ingress Controller
 Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource. An Ingress may be configured to give Services externally-reachable URLs, load balance traffic, terminate SSL / TLS, and offer name-based virtual hosting. 
