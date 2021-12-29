@@ -22,10 +22,10 @@ Containers are a form of virtualisation, but unlike virtual machines they share 
 Note - Due to the nature of containers being lightweight and portable they integrate well into Cloud and Continuous Integration/Continuous Deployment (CI/CD) environments through the use of container orchestration platforms which manage the scheduling of containers - the most popular being kubernetes.
 
 ## Docker Architecture
-Docker uses a client-server architecture in which the client communicates with the docker daemon to manage the building and running of containers. There are several components of the `docker engine`:
+The Docker engine consists of a client-server architecture in which the client communicates with the docker daemon to manage the building and running of containers. There are several components of the `docker engine`:
 
-- Docker daemon (dockerd) - Listens for API calls to manage docker objects
-- Docker client (docker) - The primary way users interact with docker, running docker commands sends the API calls to dockerd.
+- Docker daemon (dockerd) - The server process that listens for API calls to process and manage docker objects
+- Docker client (docker) - The primary way users interact with docker, running docker cli commands sends the API calls to dockerd.
 - Docker registry - Stores docker images - further described below... 
 - Docker objects - When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects. 
 
