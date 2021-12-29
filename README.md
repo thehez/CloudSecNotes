@@ -1,3 +1,3 @@
 # PenTestingNotes
 
-A reference for personal notes and Cheetsheets for performing PenTesting and configuration reviews of cloud security vendors.
+Personal notes and cheetsheets for securing and pentesting cloud service configurations, CI/CD environments and container orchestration platforms
