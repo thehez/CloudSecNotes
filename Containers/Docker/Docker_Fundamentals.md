@@ -22,10 +22,10 @@ Containers are a form of virtualisation, but unlike virtual machines they share 
 Note - Due to the nature of containers being lightweight and portable they integrate well into Cloud and Continuous Integration/Continuous Deployment (CI/CD) environments through the use of container orchestration platforms which manage the scheduling of containers - the most popular being kubernetes.
 
 ## Docker Architecture
-Docker uses a client-server architecture in which the client communicates with the docker daemon to manage the building and running of containers. There are several components of the `docker engine`:
+The Docker engine consists of a client-server architecture in which the client communicates with the docker daemon to manage the building and running of containers. There are several components of the `docker engine`:
 
-- Docker daemon (dockerd) - Listens for API calls to manage docker objects
-- Docker client (docker) - The primary way users interact with docker, running docker commands sends the API calls to dockerd.
+- Docker daemon (dockerd) - The server process that listens for API calls to process and manage docker objects
+- Docker client (docker) - The primary way users interact with docker, running docker cli commands sends the API calls to dockerd.
 - Docker registry - Stores docker images - further described below... 
 - Docker objects - When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects. 
 
@@ -48,7 +48,7 @@ CMD ["node", "src/index.js"]
 ### Docker Registry 
 Docker images can be built and stored locally using a dockerfile as described above, but most likely, images will be stored in a container registry. A container registry can be public, such as with [docker hub](https://hub.docker.com/) or private as seen with each cloud provider's internal offerings i.e. AWS has Elactic Container Registry. Images can be retrieved from the container registry by authenticating the docker client to the repository using the `docker login` command, and then pulling the image using the `docker pull` command.
 
-Note - Best security practice dictates restricting the pulling of images from public repositories (as these could contain vulnerabilities/malware etc). Instead containers should be stored in a private repository that performs image scanning to identify security issues before containers are deployed.
+Note - Best security practice dictates restricting the pulling of images from public registry (as these could contain vulnerabilities/malware etc). Instead container images should be stored in a private registry that performs image scanning to identify security issues before containers are deployed.
 
 ### Containers
 A container is an instance of an image at runtime. You can create, start, stop, move, or delete a container using the Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image based on its current state.
@@ -58,7 +58,7 @@ By default, a container is relatively well isolated from other containers and it
 A container is defined by its image as well as any configuration options you provide to it when you create or start it. When a container is removed, any changes to its state that are not stored in persistent storage disappear. Containers are predominately expected to run in the background, however its possible to create containers in 'interactive' mode and connect to them. 
 
 ## Other container technology
-Docker is not the only container technology though it is the most popular, however recently kubernetes (k8s) has dropped docker in favour of containerd. The Open Container Initiative (and container runtime interface in the case of K8s) provides a set of standards and most of these tools work together. From a top down approach:
+Docker is not the only container technology though it is the most popular, though recently kubernetes (k8s) has dropped docker in favour of containerd. The Open Container Initiative (and container runtime interface in the case of K8s) provides a set of standards and most of these tools work together. From a top down approach:
 
 Image from Tutorialworks (see references):
 ![Container technology flow](https://www.tutorialworks.com/assets/images/container-ecosystem.drawio.png?raw=true "Title")
@@ -79,6 +79,20 @@ Image from Tutorialworks (see references):
 
 Container ecosystem:
 ![Container ecosystem](https://containerd.io/img/architecture.png?raw=true "Title")
+
+## Docker Advantages & Use Cases
+Docker provides application isolation with little overhead and a low memory footprint. Additionally Docker provides developers with a layer of abstraction by packaging code and dependancies together. As such it is possible to run many multiple containers on a single host which can be rapidly spun up and down in seconds which isolating dependancies from other potential overlapping depandancy requirements.
+
+Common Use cases include:
+- Configuration Management - Docker simplifies configurations; providing the capability of pooling an environment with a configuration into code, packaging and deploying it on any platform.
+
+- Code Pipeline Management - Docker provides a consistent environment which eases the development and deployment process as code moves between various development, testing and production-like environments which may vary in infrastructure and configuration etc.
+
+- Application Isolation - With multiple microservies serving an application it is likely that such services will require common libraries and packages which may differ in version requirements causing depenancy conflicts. Docker isolates microservices within their own environment with their own depenancies and configurations for seamless deployment.
+
+- Continuous Intergration and Deployment (CI/CD) - As Docker provides image versionining it is possible to pull new code, build it, package it into a Docker image and push a new updated image to a repository. This can then be pulled via a CD tool to each development environment either on code push or frequancy.
+
+- Consistent Environments -  Docker helps prevent the 'It works on my machine' situation by setting consistent environment variables and configuration settings in the image file, without any other variables that can affect the running of an application or service.
 
 ## References, Links and Further Information
 - [dockerlabs - docker commands cheatsheet ](https://dockerlabs.collabnix.com/docker/cheatsheet/)
