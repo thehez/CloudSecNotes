@@ -1,3 +1,3 @@
-# PenTestingNotes
+THIS REPO HAS BEEN MERGED INTO MY PERSONAL PENTESTING NOTES TO CONSOLIDATE MY VARIOUS PENTESTING AND SECURITY BASED NOTES
 
-Personal notes and cheetsheets for securing and pentesting cloud service configurations, CI/CD environments and container orchestration platforms
+THIS REPO WILL NO LONGER BE MAINTAINED
