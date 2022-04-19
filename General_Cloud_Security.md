@@ -8,12 +8,13 @@
     - [3.4.1. Why Encrypt](#341-why-encrypt)
     - [3.4.2. Implementing Encryption in the Cloud](#342-implementing-encryption-in-the-cloud)
     - [3.4.3. HSM vs KMS](#343-hsm-vs-kms)
+- [IAM](#iam)
 
 # 1. Overview
 This page serves as a repository for general security principles that are not tied to one cloud vendor or another. The information is intended to focus instead on security controls and principles that apply to generic cloud native environments or for understanding how traditional on-premise security techniques are altered for cloud.
 
 # 2. Shared Responsibility Model
-The shared responsibility model comes up a lot in any cloud security conversation but I think it's fair to summarise it as the difference in what security aspects you (the customer) are responsible for compared to those which the provider is responsible for. These responsibilities also differ according to environment i.e. IaaS, PaaS, SaaS etc. For each service be aware of the controls you are responsible for or share responsibility for, generally this could be OS security, patching, network security controls, data access and middleware. 
+The shared responsibility model comes up a lot in any cloud security conversation but I think it's fair to summarise it as the difference in what security aspects you (the customer) are responsible for compared to those which the provider are responsible for. These responsibilities also differ according to environment i.e. IaaS, PaaS, SaaS etc. For each service be aware of the controls you are responsible for, generally this will be OS security, patching, network security controls, data access and middleware. 
 
 Misunderstanding shared responsibility and assuming the cloud provider is securing a resource is a root cause of many security issues (looking at you public S3 buckets)
 
@@ -47,7 +48,7 @@ Encryption is an interesting topic within cloud environments (due to various imp
   
 - **Access to platform or hosted system** - An attacker can attempt to compromise legitimate read/write access within the cloud platform (for example attacking the control plane to gain IAM permissions to use a service/key) to compromise data contained within. If encryption is managed by the database/storage system the attacker will likely be able to decieve the system into gaining access. In this case the only solution would be to use client-side encryption to ensure the data is encrypted before it is even stored in the cloud.
 
-- **Access to provider hypervisor** - Typically the resources you use in a cloud environment are running on shared resources i.e. The provider runs a physical server with a hypervisor managing multiple virtual machines. If an attacker can compromise a shared resource they may be able to dump memory in an attempt to access encryption keys stored there. In the case of highly sensitive data, it may be worth investing in single tenant resources or special hardware technology that encrypts data in memory. However data breaches within cloud provider environments are statistically very low so judgement should be made to decide the right approach.
+- **Access to provider hypervisor** - Typically the resources you use in a cloud environment are running on shared resources i.e. The provider runs a physical server with a hypervisor managing multiple virtual machines. If an attacker can compromise a shared resource they may be able to perform attacks such as dumping memory in an attempt to access data & encryption keys stored there. In the case of highly sensitive data, it may be worth investing in single tenant resources or specialist hardware technology that encrypts data in memory. However data breaches within cloud provider environments are statistically very low so a cost/risk analysis judgement should be made to decide the right approach.
 
 ### 3.4.2. Implementing Encryption in the Cloud
 Within cloud hosted environments, most services offer in-built encryption features which make use of Key Management Services (KMS) to handle encryption. KMS keys can either by managed by the administrator or the cloud provider, however in both cases the provider handles encryption/decryption of data and data encryption keys which are wrapped with a key encryption key that is stored in kms. This process is typically known as **server-side encryption**.
@@ -57,4 +58,12 @@ In sensitive environments, where organisations have strict security requirements
 ### 3.4.3. HSM vs KMS
 A Hardware Security Module (HSM) stores encryption keys in a device with significant logical and physical protections against unauthorized access. With most systems, anyone with physical access to the equipment (such as stealing a hard-drive) could potentially get access to the data. Whereas a HSM device has sensors to wipe data as soon as it is tampered with, i.e. someone tries to take it apart, scan it or generally mess about with it. 
 
-KMS uses HSM technology but those HSM clusters are multi-tenanted and distributed over multiple customer environments. Hoever, most cloud providers now have an option to use a dedicated single-tenant cloud hosted HSM (instead of KMS) in environments that have strict security or regulatory requirments in which you need to be able to manage the HSM devices (typically for FIPS etc.).
+KMS uses HSM technology but those HSM clusters are multi-tenanted and distributed over multiple customer environments. Most cloud providers now provide an option to use a dedicated single-tenant hosted HSM for those environments which may have strict security or regulatory requirments in which you need to be able to manage the HSM devices (typically for FIPS etc).
+
+# IAM
+Identity and Access Management is probably the most important security control in cloud environments. Misconfigurations with IAM controls can be disasterous, as a malicious actor can leverage APIs to access the control plane to modify the data plane - a malicious user with the right privileges can modify firewall rules and data access on the fly from any location.
+
+
+
+
+
